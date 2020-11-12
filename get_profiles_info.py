@@ -5,8 +5,7 @@ from selenium.webdriver.common.keys import Keys
 from pathlib import Path
 import time
 import csv
-from parsel import Selector
-
+from linkedin_scraper import Person, actions
 
 def browse(url):
 
@@ -31,11 +30,11 @@ def connect(driver,email,psw):
     driver.implicitly_wait(10)
     time.sleep(3)
 
-def write_companies_info_in_file(driver, companies, file_name):
+def write_profiles_info_in_file(profiles, file_name):
     with open(file_name, "a") as fp:
         wr = csv.writer(fp, dialect='excel')
         ## getting information of each company
-        for elem in companies :
+        for elem in profiles :
             wr.writerow(elem)
     fp.close()
     
@@ -59,15 +58,17 @@ def main ():
 
     # Wait 5 seconds for the page to load
     time.sleep(3)
+    list_of_profiles = []
 
     for elems in linkedin_urls:
         for elem in elems:
+            profile = []
             driver.get(elem)
             driver.implicitly_wait(10)
             time.sleep(3)
-            #url
-            url = elem
 
+            person = Person(str(elem), driver = driver, scrape=False)
+            person.scrape(close_on_complete=False)
             #name
             name = driver.find_element_by_xpath('//*[@id="ember56"]/div[2]/div[2]/div[1]/ul[1]/li[1]').text
             #position
@@ -78,17 +79,36 @@ def main ():
             connections = driver.find_element_by_xpath('//*[@id="ember56"]/div[2]/div[2]/div[1]/ul[2]/li[2]/span').text
 
             #experience
-            experience = driver.find_element_by_xpath('//*[@id="experience-section"]/ul/li')
             print('\n')
-            print('url : ', url)
+            ## url
+            print('url : ', person.linkedin_url)
+            profile.append(person.linkedin_url)
+            # name
             print('name : ', name)
+            profile.append(name)
+            ## position
             print('position : ', position)
+            profile.append(position)
+            ## location
             print('location : ', location)
+            profile.append(location)
+            ## connections
             print('connections : ', connections)
-            print(experience)
-
+            profile.append(connections)
+            ## experiences
+            print('experiences : ', person.experiences)
+            profile.append(person.experiences)
+            ## educations
+            print('education : ', person.educations)
+            profile.append(person.educations)
+            ## interests
+            print('interests : ', person.interests)
+            profile.append(person.interests)
             print('\n')
-  
+
+            list_of_profiles.append(profile)
+
+    write_profiles_info_in_file(list_of_profiles,'profiles.csv')
     time.sleep(5)
     driver.quit()
     
