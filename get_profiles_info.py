@@ -30,14 +30,21 @@ def connect(driver,email,psw):
     driver.implicitly_wait(10)
     time.sleep(3)
 
+def write_profile_info_in_file(profile, file_name):
+    with open(file_name, "a") as fp:
+        wr = csv.writer(fp, dialect='excel')
+        ## write profile
+        wr.writerow(profile)
+    fp.close()
+    
 def write_profiles_info_in_file(profiles, file_name):
     with open(file_name, "a") as fp:
         wr = csv.writer(fp, dialect='excel')
-        ## getting information of each company
-        for elem in profiles :
+        for elem in profiles:
+            ## write profile
             wr.writerow(elem)
     fp.close()
-    
+
 def read_csv (file_name):
     l = []
     script_dir = Path(__file__).parent
@@ -48,50 +55,56 @@ def read_csv (file_name):
     return l
 
 def main ():
-    linkedin_urls = read_csv('linkedin_urls.csv')
+    
+    linkedin_urls = read_csv('only_linkedin_urls.csv')
     driver = browse('https://www.linkedin.com')
-    connect(driver,'taha.clubiste@gmail.com','123TORNATITOS&')
+    connect(driver,'tahaasheerif@gmail.com','123tototorres&')
 
+    
+    # for normal user behavior in the website
     driver.execute_script(
     "(function(){try{for(i in document.getElementsByTagName('a')){let el = document.getElementsByTagName('a')[i]; "
     "if(el.innerHTML.includes('Contact info')){el.click();}}}catch(e){}})()")
 
+    
     # Wait 5 seconds for the page to load
     time.sleep(3)
     list_of_profiles = []
 
+    # get profiles information
     for elems in linkedin_urls:
         for elem in elems:
+
             profile = []
             driver.get(elem)
             driver.implicitly_wait(10)
             time.sleep(3)
 
-            person = Person(str(elem), driver = driver, scrape=False)
-            person.scrape(close_on_complete=False)
-            #name
-            name = driver.find_element_by_xpath('//*[@id="ember56"]/div[2]/div[2]/div[1]/ul[1]/li[1]').text
-            #position
-            position = driver.find_element_by_xpath('//*[@id="ember56"]/div[2]/div[2]/div[1]/h2').text
-            #location
-            location = driver.find_element_by_xpath('//*[@id="ember56"]/div[2]/div[2]/div[1]/ul[2]/li[1]').text
-            #number of connection
-            connections = driver.find_element_by_xpath('//*[@id="ember56"]/div[2]/div[2]/div[1]/ul[2]/li[2]/span').text
+            person = Person(linkedin_url=str(elem), driver=driver, scrape=False)
 
-            #experience
+            person.scrape(close_on_complete=False)
+
+
+            #number of connection
+            try:
+                connections = driver.find_element_by_xpath('//*[@id="ember56"]/div[2]/div[2]/div[1]/ul[2]/li[2]/span').text
+            except:
+                connections = []
+            
             print('\n')
             ## url
             print('url : ', person.linkedin_url)
             profile.append(person.linkedin_url)
-            # name
-            print('name : ', name)
-            profile.append(name)
+            #name
+            print('name : ',person.name)
+            profile.append(person.name)
             ## position
-            print('position : ', position)
-            profile.append(position)
+            print('position : ', person.job_title)
+            profile.append(person.job_title)
+
             ## location
-            print('location : ', location)
-            profile.append(location)
+            print('location : ', person.location)
+            profile.append(person.location)
             ## connections
             print('connections : ', connections)
             profile.append(connections)
@@ -106,9 +119,15 @@ def main ():
             profile.append(person.interests)
             print('\n')
 
+            write_profile_info_in_file(profile, 'profiles.csv')
             list_of_profiles.append(profile)
 
-    write_profiles_info_in_file(list_of_profiles,'profiles.csv')
+            person.experiences.clear()
+            person.educations.clear()
+            person.interests.clear()
+            
+    write_profiles_info_in_file(list_of_profiles,'profiles2.csv')
+    
     time.sleep(5)
     driver.quit()
     
