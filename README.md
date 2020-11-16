@@ -10,8 +10,8 @@
 * [Who do I talk to?](#Who_do_I_talk_to?)
 
 ## About the Project
-In this project, we worked on scraping "https://ecosystem.lafrenchtech.com/" website.  
-Our team needed the information of each startup, scaleup and accelerator and funding round.
+In this project, we worked on scraping "https://linkedin.com/" website.  
+The client needed the information of each data scientist in the US.
 For this purpose, we used Selenium so we can easily scrape such a "DYNAMIC" website.
 
 ## Getting Started

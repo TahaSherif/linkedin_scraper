@@ -37,14 +37,6 @@ def write_profile_info_in_file(profile, file_name):
         wr.writerow(profile)
     fp.close()
     
-def write_profiles_info_in_file(profiles, file_name):
-    with open(file_name, "a") as fp:
-        wr = csv.writer(fp, dialect='excel')
-        for elem in profiles:
-            ## write profile
-            wr.writerow(elem)
-    fp.close()
-
 def read_csv (file_name):
     l = []
     script_dir = Path(__file__).parent
@@ -125,9 +117,7 @@ def main ():
             person.experiences.clear()
             person.educations.clear()
             person.interests.clear()
-            
-    write_profiles_info_in_file(list_of_profiles,'profiles2.csv')
-    
+                
     time.sleep(5)
     driver.quit()
     

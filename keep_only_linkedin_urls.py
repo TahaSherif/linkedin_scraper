@@ -20,7 +20,7 @@ def write_profiles_info_in_file(profiles, file_name):
     fp.close()   
 
 def keep_only_linkedin_urls():
-    all_urls = read_csv('linkedin_urls.csv')
+    all_urls = read_csv('all_urls.csv')
 
     # only keep the linkedin urls
     i = 0
@@ -34,3 +34,5 @@ def keep_only_linkedin_urls():
         i +=1
     
     write_profiles_info_in_file(all_urls, 'only_linkedin_urls.csv')
+
+keep_only_linkedin_urls()
