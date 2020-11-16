@@ -56,7 +56,7 @@ pip install selenium
 ```
 
 ## Usage
-After setting up you **virtual envirement** and installing all the needed libraries, open your work directory and execute in terminal : "python scraping.py"
+After setting up you **virtual envirement** and installing all the needed libraries, open your work directory and execute in terminal any script you want in the repo. All the scripts return csv files.
 
 ## Who do I talk to?
 For any additional details about the project, you can contact **Taha Sherif** by sending an e-mail to **taha.sherif@breakpoint-technology.fr**.
